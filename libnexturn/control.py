@@ -1,42 +1,56 @@
 import argparse
 import btle
 import struct
+import time
 
 def control(arguments):
     # temporary
-    print arguments
-    # TODO LIST
-    # grab bulbs from args
-    # iterate
-    # connect
-    # apply
-    # - done
+    # print arguments
 
-    # something like
+    for i in arguments.address:
+        # if at first we don't succeed try until we die.
+        # this is a bit of a hack, but the bulb is finicky.
+        while True:
+            try:
+                peripheral = btle.Peripheral(i)
 
-    # for i in arguments.address:
-    #     peripheral = btle.Peripheral(i)
-    #     peripheral.discoverServices()
-    #     colorcontrol = peripheral.services.values()[3]
-    #     x = colorcontrol.getCharacteristics()
-    #
-    #     if arguments.red:
-    #         ss = struct.pack('h',arguments.red)[0]
-    #         x[0].write(ss)
-    #
-    #     if arguments.green:
-    #         ss = struct.pack('h',arguments.green)[0]
-    #         x[1].write(ss)
-    #
-    #     if arguments.blue:
-    #         ss = struct.pack('h',arguments.blue)[0]
-    #         x[2].write(ss)
-    #
-    #     if arguments.intensity:
-    #         ss = struct.pack('h',arguments.intensity)[0]
-    #         x[3].write(ss)
+            except:
+                print 'failed to connect to %s , trying again in a moment' % i
+                time.sleep(3)
+                continue
 
-    #     disconnect()
+            else:
+                #the rest of the code
+                break
+
+        # after connecting we get the service list
+        peripheral.discoverServices()
+
+        # get the color control service
+        colorcontrol = peripheral.services.values()[2]
+
+        # get the values
+        x = colorcontrol.getCharacteristics()
+
+        # do that thing
+        if arguments.red or arguments.red == 0:
+            ss = struct.pack('h',arguments.red)[0]
+            x[0].write(ss)
+
+        if arguments.green or arguments.green == 0:
+            ss = struct.pack('h',arguments.green)[0]
+            x[1].write(ss)
+
+        if arguments.blue or arguments.blue == 0:
+            ss = struct.pack('h',arguments.blue)[0]
+            x[2].write(ss)
+
+        if arguments.intensity or arguments.intensity == 0:
+            ss = struct.pack('h',arguments.intensity)[0]
+            x[3].write(ss)
+
+        # disconnect, else it gets angry
+        peripheral.disconnect()
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description='Control a Nexturn Light Bulb (Yifang SH201)')
