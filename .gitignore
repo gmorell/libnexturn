@@ -1,2 +1,5 @@
 *.idea
 *.pyc
+bluepy-helper
+btle.py
+sensortag.py
