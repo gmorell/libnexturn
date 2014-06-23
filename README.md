@@ -13,8 +13,17 @@ Tested on python 2.7
 
 ## TODO
 
-- Actually control things
-
 - Add support for color preset file
 
 - Further investigation into other bluetooth "endpoints"
+
+## CHANGELOG
+
+### 0.2
+- HSV Mode
+- HSV MinMax
+- COL Random
+
+### 0.1
+- Initial Version with COL mode
+  
