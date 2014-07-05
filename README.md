@@ -19,21 +19,23 @@ Tested on python 2.7
 
 ## EXAMPLES
 
+All examples show the minimum arguments needed to work. 
+
 ### COLOR
 
-`control.py color`
+`control.py rgb`
 
 #### DEFAULT MODE
 
 Set a particular color
 
-`python control.py color -a C4:ED:BA:56:00:00 --red 0 --green 102 --blue 202`
+`python control.py rgb color -a C4:ED:BA:56:00:00 --red 0 --green 102 --blue 202`
 
 #### RANDOM
 
 Sets a random color, currently mostly light colors / pastels
 
-`python control.py color -a C4:ED:BA:56:00:00 --mode random`
+`python control.py rgb random -a C4:ED:BA:56:00:00`
 
 ### HSV
 
@@ -43,15 +45,27 @@ Sets a random color, currently mostly light colors / pastels
 
 HSV Control mode
 
-`python control.py hue -a C4:ED:BA:56:00:00 --hue 0 --saturation 255 --value 255`
+`python control.py hue color -a C4:ED:BA:56:00:00 --hue 0`
 
 #### MINMAX
 
 Pick a min Hue and a maximum hue, will select a color between the two values. If min > max, we go around the other direction
 
-`python control.py hue -a C4:ED:BA:56:00:00 --mode minmax --min 192 --max 15`
+`python control.py hue minmax -a C4:ED:BA:56:00:00 --min 192 --max 15`
+
+### CONFIGURATION AND NAME
+
+TODO
 
 ## CHANGELOG
+
+### 0.3
+- Refactored into reusable classes
+- Exploration into name setting, name getting, no luck just yet.
+- Better usage of `argparse`
+- COL Bounce
+- Updated Examples
+- Sync modes for randoms, set all bulbs to the same random color, instead of individually `--sync0`
 
 ### 0.2
 - HSV Mode
