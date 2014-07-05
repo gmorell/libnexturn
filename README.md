@@ -59,7 +59,7 @@ TODO
 
 ## CHANGELOG
 
-### 0.3
+### 0.3 - 2014-07-04
 - Refactored into reusable classes
 - Exploration into name setting, name getting, no luck just yet.
 - Better usage of `argparse`
@@ -67,11 +67,11 @@ TODO
 - Updated Examples
 - Sync modes for randoms, set all bulbs to the same random color, instead of individually `--sync0`
 
-### 0.2
+### 0.2 - 2014-06-23
 - HSV Mode
 - HSV MinMax
 - COL Random
 
-### 0.1
+### 0.1 - 2014-06-21
 - Initial Version with COL mode
   
