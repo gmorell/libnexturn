@@ -22,6 +22,11 @@ def MacAddrType(v):
     except:
         raise argparse.ArgumentTypeError("Given value '%s' is not a valid mac address"%(v,))
 
+def IPV4AddrType(v):
+    try:
+        return re.match( r'[0-9]+(?:\.[0-9]+){3}', v).group(0)
+    except:
+        raise argparse.ArgumentTypeError("Given value '%s' is not a valid ipv4 address"%(v,))
 def RGBType(v):
     # check that we're a comma seperated list
     try:
@@ -59,11 +64,11 @@ class NexturnConnectionController(object):
                 # raise
                 #TODO add a cannot find exception here, in addition to failing to connect the first time
                 print 'failed to find s%s , trying again in a moment' % addr
-                time.sleep(1)
+                time.sleep(5)
                 return None
             except:
                 print 'failed to connect to %s , trying again in a moment' % addr
-                time.sleep(1)
+                time.sleep(5)
                 # raise
                 # return None
             else:
@@ -276,6 +281,17 @@ class NexturnHSVController(NexturnRGBController):
     def color(self):
         self._write_hsv_all(self.args.hue, self.args.saturation, self.args.value)
 
+    def random(self):
+        sat = self.args.saturation
+        val = self.args.value
+        if self.args.sync:
+            hue = random.randint(0,255)
+            self._write_hsv_all(hue, sat, val)
+
+        else:
+            for p in self.peripherals:
+                hue = random.randint(0,255)
+                self._write_hsv(hue, sat, val, p)
 
 class NexturnNameController(NexturnConnectionController): # UNTESTED
     def __init__(self, args):
@@ -384,6 +400,20 @@ if __name__ == "__main__":
         '-y', '--sync', help="All Bulbs Same Color", action='store_true', default=False, dest="sync"
     )
 
+    ph_random = ph.add_parser('random')
+    ph_random.add_argument(
+        '-a', '--address', type=MacAddrType, help=HELP_STRING_ADDR_P, action='append', dest="address", required=True
+    )
+    ph_random.add_argument(
+        '-s', '--saturation', type=int, help="Int Value for Saturation", action='store', dest="saturation", default=255
+    )
+    ph_random.add_argument(
+        '-v', '--value', type=int, help="Int Value for Value", action='store', dest="value", default=255
+    )
+    ph_random.add_argument(
+        '-y', '--sync', help="All Bulbs Same Color", action='store_true', default=False, dest="sync"
+    )
+
     ### Management Parsers
     parse_conf = subparsers.add_parser("config")
     pc_name = parse_conf.add_subparsers(dest="command_conf")
@@ -410,10 +440,11 @@ if __name__ == "__main__":
     # couldn't think of a better way to get these values
     arguments = parser.parse_args()
     argumentsdict = arguments.__dict__
+    print arguments
     if argumentsdict.get('command_conf',None) in ['name_get', 'name_set']:
         NexturnNameController(arguments)
 
-    elif argumentsdict.get('command_hue', None) in ['color', 'minmax']:
+    elif argumentsdict.get('command_hue', None) in ['color', 'minmax', 'random']:
         NexturnHSVController(arguments)
 
     elif argumentsdict.get('command_rgb', None) in ['color', 'random', 'bounce']:
